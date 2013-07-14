@@ -13,8 +13,8 @@ $myid        = ''; // свой айди
 $token       = ''; // Получить тут: http://oauth.vkontakte.ru/authorize?client_id=2626107&scope=16383&redirect_uri=http://oauth.vk.com/blank.html&response_type=token
 
 $myname = null;
-$mysurname =null;
-$myphoto =null;
+$mysurname = null;
+$myphoto = null;
 $workingdir = null;
 
 /* ############### */
@@ -30,7 +30,6 @@ function API($method, $sett)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     curl_close($ch);
-//	echo $response;
 
     return json_decode($response, true);
 
@@ -79,7 +78,6 @@ function prepare() {
 	global $myid, $zip;
 	global $myname,$mysurname,$myphoto,$workingdir;
 	
-//if ($myname == null) {
 	$info    = API('getProfiles', array(
         'uid' => $myid,
         'fields' => 'photo'
@@ -97,13 +95,11 @@ function prepare() {
 	mkdir($workingdir."\\dialog_files");
 	copyr("dialog_files", $workingdir."\\dialog_files");
 	
- //   }
 	
 }
 
 function dump($id)
 {
-	//usleep(100000);
     global $myid, $zip;
 	global $myname,$mysurname,$myphoto,$workingdir;
 	
@@ -149,7 +145,6 @@ function dump($id)
     
     
     for ($i = $iterations; $i >= 0; $i--) {
-	//usleep(100000);
 	echo "+";
         $page = API('messages.getHistory', array(
             'uid' => $id,
@@ -203,33 +198,9 @@ EOF;
 
 function dump_chat($chatid)
 {
-//	usleep(100000);
+
     global $myid, $zip;
 	global $myname,$mysurname,$myphoto,$workingdir;
-	
-  /*  $info      = API('messages.getChatUsers', array(
-        'chat_id' => $chatid,
-        'fields' => 'photo'
-    ));
-	if(empty($info['response'])) { 
-		die('<pre>Error</pre>');
-	}
-    $uids = array();
-	
-	foreach ($info['response'] as $inf) {
-    $s_name    = $inf['first_name']; // 
-    $s_surname = $inf['last_name']; // -- Граббинг инфы о собеседнике
-    $s_photo   = $inf['photo']; // //
-	$s_uid   = $inf['uid']; // //
-    //$s_tabname = $s_name . " " . $s_surname;
-	$uids[$s_uid] = array($s_name, $s_surname, $s_photo); 
-    
-	}
-//	print_r($uids);
-//	exit;
-*/
-	$info = null;
-
 	
 	$name = $myname;
 	$surname = $mysurname;
@@ -242,7 +213,6 @@ function dump_chat($chatid)
 		
 	 $title = $titleresponse['response']['title'];
 	
-	//usleep(100000);
 	
     # Let`s get is started!
     $page  = API('messages.getHistory', array(
@@ -253,8 +223,6 @@ function dump_chat($chatid)
     
     $first      = $count % 100; // API позволяет получать не больше 100 сообщений за раз, сначала получим те, которые не получить при count = 100
     $iterations = ($count - $first) / 100; // Сколько раз получать по 100 сообщений
-    
-	//usleep(100000);
 	
     $page = API('messages.getHistory', array(
         'chat_id' => $chatid,
@@ -266,7 +234,6 @@ function dump_chat($chatid)
     
     
     for ($i = $iterations; $i >= 0; $i--) {
-	//usleep(100000);
 	echo "+";
         $page = API('messages.getHistory', array(
             'chat_id' => $chatid,
@@ -287,8 +254,6 @@ function dump_chat($chatid)
             $tphoto = $photo;
             $tid    = $myid;
         } else {
-	
-	//usleep(100000);
 	
     $info      = API('getProfiles', array(
         'uid' => $msg['from_id'],
@@ -345,14 +310,12 @@ function iterate_dialogs($response) {
 	   if (isset($resp['chat_id'])) {
 				echo "chat".$resp['chat_id']."\n";
 				dump_chat($resp['chat_id']);
-				//exit;
 		}	   
 		else {
 			if (isset($resp['uid'])) {
 				echo "id".$resp['uid']."\n";
 				dump($resp['uid']);
 			
-				//echo $counter."\n";
 				}
 		}
 		
@@ -362,11 +325,8 @@ function iterate_dialogs($response) {
 
 
 	prepare();
-    //$friends = API('friends.get', array());
-    //$friends = $friends['response'];
-	//$counter = -1;
+
 	$response = API('messages.getDialogs', array( "count" => "1"));
-	//var_dump($response);
 	
 	$count = (int) $response['response'][0]; 
 	
